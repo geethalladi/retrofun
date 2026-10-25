@@ -1,5 +1,6 @@
 import csv
-from db import Model, Session, engine
+from db import Model, engine
+from db import SessionMaker as Session
 from models import Product
 
 
@@ -13,7 +14,9 @@ def main():
                 reader = csv.DictReader(f)
                 for row in reader:
                     row['year'] = int(row['year'])
+                    # create Product Instance
                     product = Product(**row)
+                    # Add to the DB
                     session.add(product)
 
 
