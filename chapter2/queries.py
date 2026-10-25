@@ -5,12 +5,18 @@ from sqlalchemy import select, or_, func
 session = SessionMaker()
 
 
+def deletion():
+    pdt = session.get(Product, 23)
+    session.delete(pdt)
+    session.commit()
+
+
 def select_by_id():
     # with where clause
-    q = select(Product).where(Product.id == 25)
+    q = select(Product).where(Product.id == 23)
     session.scalar(q)
     # using session.get()
-    result = session.get(Product, 25)
+    result = session.get(Product, 23)
     print(result)
 
 
