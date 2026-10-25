@@ -5,6 +5,32 @@ from sqlalchemy import select, or_, func
 session = SessionMaker()
 
 
+def group_by():
+    # group by to find the max / min years
+    q = (select(Product.manufacturer,
+                func.min(Product.year),
+                func.max(Product.year),
+                func.count())
+         .group_by(Product.manufacturer)
+         .order_by(Product.manufacturer))
+    session.execute(q).all()
+    # group_by and having
+    q = (select(Product.manufacturer,
+                func.count())
+         .group_by(Product.manufacturer)
+         .having(func.count() >= 5)
+         .order_by(Product.manufacturer))
+    session.execute(q).all()
+    # specify a label to remove redundancy above
+    num_products = func.count().label('num_products')
+    q = (select(Product.manufacturer,
+                num_products)
+         .group_by(Product.manufacturer)
+         .having(num_products >= 5)
+         .order_by(Product.manufacturer))
+    session.execute(q).all()
+
+
 def aggregates():
     # count
     q = select(func.count(Product.id))
