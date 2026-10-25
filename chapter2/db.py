@@ -35,4 +35,4 @@ engine = create_engine(os.environ['DATABASE_URL'],
 # This is different from sqlalchemy.orm.Session
 # Instead of passing engine, pass the Session (maker) instance
 # so that the functions can instantiate a Session in a context manager
-Session = sessionmaker(engine, future=True)
+SessionMaker = sessionmaker(engine, future=True)

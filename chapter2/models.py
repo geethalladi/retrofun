@@ -1,7 +1,7 @@
 from typing import Optional
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, Session
-from db import Model
+from db import Model, engine, SessionMaker
 
 
 class Product(Model):
@@ -24,8 +24,9 @@ class Product(Model):
 
 
 def create_product_instance(engine):
-    # Session as context manager
+    # Using engine
     # sqlalchemy.orm.Session
+    # Use engine to create a session every time
     with Session(engine) as session:
         c64 = Product(name='Commodore 64', manufacturer='Commodore')
         try:
@@ -39,8 +40,19 @@ def create_product_instance(engine):
         print(c64)
 
 
+def create_product_instance_use_sessionmaker():
+    c64 = Product(name='Commodore 64', manufacturer='Commodore')
+    with SessionMaker() as session:
+        # begin implements the try / catch and commit / rollback
+        with session.begin():
+            session.add(c64)
+        print(c64)
+
+
 def clean_db(engine):
     Model.metadata.drop_all(engine)
     Model.metadata.create_all(engine)
 
-# clean_db(engine)
+
+def clean():
+    clean_db(engine)
