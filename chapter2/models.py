@@ -14,7 +14,7 @@ class Product(Model):
     manufacturer: Mapped[str] = mapped_column(String(64), index=True)
 
     # if no constraint needed just `year: Mapped[int]` is enough
-    year: Mapped[Optional[int]]  # = mapped_column(index=True)
+    year: Mapped[int] = mapped_column(index=True)
 
     country: Mapped[Optional[str]] = mapped_column(String(32))
     cpu: Mapped[Optional[str]] = mapped_column(String(32))
