@@ -5,12 +5,17 @@ from db import Model
 
 
 class Product(Model):
+    # Plural table name
     __tablename__ = 'products'
 
+    # use mapped_column for defining the column properties
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(64), index=True, unique=True)
     manufacturer: Mapped[str] = mapped_column(String(64), index=True)
+
+    # if no constraint needed just `year: Mapped[int]` is enough
     year: Mapped[int] = mapped_column(index=True)
+
     country: Mapped[Optional[str]] = mapped_column(String(32))
     cpu: Mapped[Optional[str]] = mapped_column(String(32))
 
