@@ -88,6 +88,15 @@ def aggregates():
     # distinct count
     q = select(func.count(Product.manufacturer.distinct()))
     session.scalar(q)
+    # manufacturers in 1980s
+    q = (select(Product.manufacturer).distinct()
+         .where(Product.year.between(1980, 1989)))
+    session.scalars(q).all()
+    # 'T' manufacturers
+    q = (select(Product.manufacturer.distinct())
+         .where(Product.manufacturer.like('T%'))
+         .order_by(Product.manufacturer.asc()))
+    session.scalars(q).all()
 
 
 def order_by():
@@ -97,8 +106,15 @@ def order_by():
     q = (select(Product)
          .order_by(Product.year.desc()))
     session.scalars(q).all()
+    # order by multiple columns
     q = (select(Product)
          .order_by(Product.year.desc(), Product.year.asc()))
+    session.scalars(q).all()
+    # Product with Z80 CPU or 6502 CPU
+    q = (select(Product)
+         .where(or_(Product.cpu.like('%Z80%'), Product.cpu.like('%6502%')))
+         .where(Product.year < 1990)
+         .order_by(Product.name.asc()))
     session.scalars(q).all()
 
 
@@ -122,6 +138,18 @@ def select_filter():
     # between
     q = (select(Product)
          .where(Product.year.between(1970, 1990)))
+    session.scalars(q).all()
+
+    # first 3 Products by name built in 1983
+    q = (select(Product)
+         .where(Product.year == 1983)
+         .limit(3)
+         .order_by(Product.name.asc()))
+    session.scalars(q).all()
+
+    # Product with Z80 CPU
+    q = (select(Product)
+         .where(Product.cpu.like('%Z80%')))
     session.scalars(q).all()
 
 
