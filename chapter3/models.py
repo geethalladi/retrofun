@@ -15,6 +15,9 @@ class Product(Model):
     country: Mapped[Optional[str]] = mapped_column(String(32))
     cpu: Mapped[Optional[str]] = mapped_column(String(32))
 
+    # 1:1 side of 1:n relationship
+    # manufacturer <-> products properties are related
+    # this is mentioned in both sides as part of `back_populates`
     manufacturer: Mapped['Manufacturer'] = relationship(
         back_populates='products')
 
@@ -28,6 +31,7 @@ class Manufacturer(Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(64), index=True, unique=True)
 
+    # declaring the 1:n side of relationship
     products: Mapped[list['Product']] = relationship(
         cascade='all, delete-orphan', back_populates='manufacturer')
 

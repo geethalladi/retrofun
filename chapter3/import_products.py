@@ -16,14 +16,19 @@ def main():
                 for row in reader:
                     row['year'] = int(row['year'])
 
+                    # this is a string instance
+                    # remove this manufacturer string
                     manufacturer = row.pop('manufacturer')
                     p = Product(**row)
 
                     if manufacturer not in all_manufacturers:
-                        m = Manufacturer(name=manufacturer)
-                        session.add(m)
-                        all_manufacturers[manufacturer] = m
-                    all_manufacturers[manufacturer].products.append(p)
+                        entity = Manufacturer(name=manufacturer)
+                        session.add(entity)
+                        print(f"Added {entity}")
+                        # string -> entity mapping
+                        all_manufacturers[manufacturer] = entity
+                    entity = all_manufacturers[manufacturer]
+                    entity.products.append(p)
 
 
 if __name__ == '__main__':
