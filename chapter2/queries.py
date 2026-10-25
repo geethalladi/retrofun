@@ -70,6 +70,21 @@ def group_by():
          .having(num_products >= 5)
          .order_by(Product.manufacturer))
     session.execute(q).all()
+    # first, last year, num_products in Croatia
+    q = (select(func.min(Product.year),
+                func.max(Product.year),
+                func.count(Product.id))
+         .where(Product.country == 'Croatia')
+         .group_by(Product.country))
+    session.execute(q).all()
+    # num_products each year
+    num_products = func.count().label('num_products')
+    q = (select(Product.year, num_products)
+         .group_by(Product.year)
+         .order_by(num_products.desc())
+         .having(num_products > 0)
+         )
+    session.execute(q).all()
 
 
 def aggregates():
@@ -97,6 +112,10 @@ def aggregates():
          .where(Product.manufacturer.like('T%'))
          .order_by(Product.manufacturer.asc()))
     session.scalars(q).all()
+    # USA manufacturers
+    q = (select(func.count(Product.manufacturer.distinct()))
+         .where(Product.country == 'USA'))
+    session.scalar(q)
 
 
 def order_by():
