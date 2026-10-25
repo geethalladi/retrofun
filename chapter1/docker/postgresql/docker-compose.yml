@@ -1,25 +1,28 @@
-version: '3'
- 
 services:
   db:
-    image: postgres
+    image: postgres:17.2
     restart: always
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+    container_name: postgres
     ports:
       - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql
+      - postgres-volume:/var/lib/postgresql/data
   admin:
     image: dpage/pgadmin4
     restart: always
+    container_name: pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: password
     ports:
       - 8080:80
     volumes:
-      - admin-data:/var/lib/pgadmin
+      - pgadmin-volume:/var/lib/pgadmin
 volumes:
-  db-data:
-  admin-data:
+  postgres-volume:
+    external: true
+  pgadmin-volume:
+    external: true
