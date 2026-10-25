@@ -5,6 +5,32 @@ from sqlalchemy import select, or_, func
 session = SessionMaker()
 
 
+def pagination():
+    # limit
+    q = (select(Product)
+         .order_by(Product.name)
+         .limit(3))
+    session.scalars(q).all()
+    # limit / offset
+    q = (select(Product)
+         .order_by(Product.name)
+         .offset(3)
+         .limit(3))
+    session.scalars(q).all()
+    # limit / offset -> when rows are added / removed
+    q = (select(Product)
+         .order_by(Product.name)
+         .limit(3)
+         .where(Product.name > 'Acron Archimedes'))
+    session.scalars(q).all()
+    # when going back (instead of limit / offset)
+    q = (select(Product)
+         .order_by(Product.name.desc())
+         .limit(3)
+         .where(Product.name < 'Acorn Atom'))
+    session.scalars(q).all()
+
+
 def group_by():
     # group by to find the max / min years
     q = (select(Product.manufacturer,
