@@ -5,6 +5,15 @@ from sqlalchemy import select, or_, func
 session = SessionMaker()
 
 
+def select_by_id():
+    # with where clause
+    q = select(Product).where(Product.id == 25)
+    session.scalar(q)
+    # using session.get()
+    result = session.get(Product, 25)
+    print(result)
+
+
 def pagination():
     # limit
     q = (select(Product)
