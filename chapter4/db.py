@@ -16,5 +16,5 @@ class Model(DeclarativeBase):
 
 load_dotenv()
 
-engine = create_engine(os.environ['DATABASE_URL'])
+engine = create_engine(os.environ['DATABASE_URL'], echo=True, future=True)
 Session = sessionmaker(engine)

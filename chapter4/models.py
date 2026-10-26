@@ -3,10 +3,13 @@ from sqlalchemy import String, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db import Model
 
-
+# defining the join table
+# Doing at the top, so that the secondary relationship reference
+# could be done using this join table
 ProductCountry = Table(
     'products_countries',
     Model.metadata,
+    # specify column - foreign key at both the ends
     Column('product_id', ForeignKey('products.id'), primary_key=True,
            nullable=False),
     Column('country_id', ForeignKey('countries.id'), primary_key=True,
@@ -24,8 +27,11 @@ class Product(Model):
     year: Mapped[int] = mapped_column(index=True)
     cpu: Mapped[Optional[str]] = mapped_column(String(32))
 
+    # manufacturer as 1:n (many end to one)
     manufacturer: Mapped['Manufacturer'] = relationship(
         back_populates='products')
+
+    # countries as a many to many relationship
     countries: Mapped[list['Country']] = relationship(
         secondary=ProductCountry, back_populates='products')
 
@@ -36,9 +42,11 @@ class Product(Model):
 class Manufacturer(Model):
     __tablename__ = 'manufacturers'
 
+    # manufacturer with (id, name)
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(64), index=True, unique=True)
 
+    # manufacturer as 1:n (one end to many)
     products: Mapped[list['Product']] = relationship(
         cascade='all, delete-orphan', back_populates='manufacturer')
 
@@ -49,9 +57,14 @@ class Manufacturer(Model):
 class Country(Model):
     __tablename__ = 'countries'
 
+    # separate table for country
+    # stores just the (id, name) attributes
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(32), index=True, unique=True)
 
+    # Join Table and many to many relations
+    # referencing the ProductCountry in `secondary`
+    # back_populates mentions on the other side
     products: Mapped[list['Product']] = relationship(
         secondary=ProductCountry, back_populates='countries')
 
