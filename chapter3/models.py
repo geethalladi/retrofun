@@ -19,6 +19,7 @@ class Product(Model):
     # manufacturer <-> products properties are related
     # this is mentioned in both sides as part of `back_populates`
     manufacturer: Mapped['Manufacturer'] = relationship(
+        # lazy='joined',
         back_populates='products')
 
     def __repr__(self):
@@ -33,7 +34,9 @@ class Manufacturer(Model):
 
     # declaring the 1:n side of relationship
     products: Mapped[list['Product']] = relationship(
-        cascade='all, delete-orphan', back_populates='manufacturer')
+        # lazy='joined',
+        cascade='all, delete-orphan',
+        back_populates='manufacturer')
 
     def __repr__(self):
         return f'Manufacturer({self.id}, "{self.name}")'
