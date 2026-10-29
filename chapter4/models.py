@@ -6,6 +6,7 @@ from db import Model
 # defining the join table
 # Doing at the top, so that the secondary relationship reference
 # could be done using this join table
+# this uses core syntax for defining the table
 ProductCountry = Table(
     'products_countries',
     Model.metadata,
@@ -32,8 +33,10 @@ class Product(Model):
         back_populates='products')
 
     # countries as a many to many relationship
+    # secondary specifies the external join table
     countries: Mapped[list['Country']] = relationship(
-        secondary=ProductCountry, back_populates='products')
+        secondary=ProductCountry,
+        back_populates='products')
 
     def __repr__(self):
         return f'Product({self.id}, "{self.name}")'
@@ -64,9 +67,11 @@ class Country(Model):
 
     # Join Table and many to many relations
     # referencing the ProductCountry in `secondary`
+    # secondary specifies the external join table
     # back_populates mentions on the other side
     products: Mapped[list['Product']] = relationship(
-        secondary=ProductCountry, back_populates='countries')
+        secondary=ProductCountry,
+        back_populates='countries')
 
     def __repr__(self):
         return f'Country({self.id}, "{self.name}")'
